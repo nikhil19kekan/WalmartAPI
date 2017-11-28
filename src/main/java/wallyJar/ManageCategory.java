@@ -4,7 +4,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.json.simple.JSONArray;
@@ -17,22 +16,15 @@ import org.json.simple.parser.JSONParser;
  */
 public class ManageCategory {
 	static String data=null;
-	List<Category> categories=null;
+	static List<Category> categories=null;
 	public List<Category> getCategories() {
 		fetchJSONData();
 		return categories;
 	}
 	/*
-	 * constructor that nullifies all static class data
-	 */
-	public ManageCategory() {
-		data=null;
-		categories = new ArrayList<Category>();
-	}
-	/*
 	 * this method traverse the category tree recursively to traverse through all the categories that we have.
 	 */
-	private void fetchCategories(JSONArray arr){
+	private static void fetchCategories(JSONArray arr){
 		try {
 			for(int i=0;i<arr.size();i++) {
 				Object obj = arr.get(i);
@@ -55,7 +47,7 @@ public class ManageCategory {
 	 * This method removes un-necessary slash and hyphens 
 	 * and puts -> to indicate sub category in path
 	 */
-	private String cleanPath(String path){
+	private static String cleanPath(String path){
 		StringBuilder strBuilder = new StringBuilder();
 		try {
 			for(int i=0;i<path.length();i++) {
@@ -80,7 +72,7 @@ public class ManageCategory {
 	 * returns value part for key "categories"
 	 * this part consists array of categories along with subcategories nested within each category.
 	 */
-	private void cleanAndFetch(){
+	private static void cleanAndFetch(){
 		try {
 			JSONParser parser = new JSONParser();
 			Object obj = parser.parse(data);
@@ -102,7 +94,7 @@ public class ManageCategory {
 	 * This Method fetches JSON string from walmart TAXONOMY API into static data variable 
 	 * Then it takes out categories from json string calling cleanAndFetch method.
 	 */
-	private void fetchJSONData() {
+	private static void fetchJSONData() {
 		try {
 			URL walmartUrl = new URL("http://api.walmartlabs.com/v1/taxonomy?apiKey=mbqtt78en6jgfpzmuyj6ab5s&format=json"); 
 			HttpURLConnection con = (HttpURLConnection)walmartUrl.openConnection();
@@ -127,4 +119,8 @@ public class ManageCategory {
 		}
 	}
 	
+	public static List<Category> getCategoriesCatalogue(){
+		fetchJSONData();
+		return categories;
+	}
 }
